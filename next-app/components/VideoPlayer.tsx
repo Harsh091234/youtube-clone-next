@@ -12,7 +12,7 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ video }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videos = "/video/vdo.mp4";
+  const videos = "/video/video.mp4";
 
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden">
