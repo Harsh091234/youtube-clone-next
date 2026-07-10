@@ -14,6 +14,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
   const [videoTitle, setVideoTitle] = useState("");
   const [uploadComplete, setUploadComplete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+ 
   const handlefilechange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -33,6 +34,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
       }
     }
   };
+  
   const resetForm = () => {
     setVideoFile(null);
     setVideoTitle("");
@@ -43,11 +45,13 @@ const VideoUploader = ({ channelId, channelName }: any) => {
       fileInputRef.current.value = "";
     }
   };
+ 
   const cancelUpload = () => {
     if (isUploading) {
       toast.error("Your video upload has been cancelled");
     }
   };
+ 
   const handleUpload = async () => {
     if (!videoFile || !videoTitle.trim()) {
       toast.error("Please provide file and title");
@@ -82,6 +86,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
       setIsUploading(false);
     }
   };
+  
   return (
     <div className="bg-gray-50 rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4">Upload a video</h2>
