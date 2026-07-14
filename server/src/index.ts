@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
-// import userroutes from "./routes/auth.js";
+
+import userroutes from "./routes/auth.js";
 // import videoroutes from "./routes/video.js";
 // import likeroutes from "./routes/like.js";
 // import watchlaterroutes from "./routes/watchlater.js";
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 connectDB();
 app.use(bodyParser.json());
-// app.use("/user", userroutes);
+app.use("/user", userroutes);
 // app.use("/video", videoroutes);
 // app.use("/like", likeroutes);
 // app.use("/watch", watchlaterroutes);
