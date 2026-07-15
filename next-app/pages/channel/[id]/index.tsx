@@ -6,13 +6,13 @@ import { channel } from "diagnostics_channel";
 import { useUser } from "@/context/AuthContext";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/router";
-import React from "react";
+import React, {Suspense} from "react";
 
 const index = () => {
   const router = useRouter();
   const { id } = router.query;
   const { user } = useUser();
-
+  console.log(user);
   try {
     let channel = user;
    
@@ -20,14 +20,15 @@ const index = () => {
     return (
       <div className="flex-1 min-h-screen bg-white">
         <div className="max-w-full mx-auto">
-          <ChannelHeader channel={channel} user={user} />
+          <Suspense fallback={<div>Loading...</div>}><ChannelHeader channel={channel} user={user} />
           <Channeltabs />
           <div className="px-4 pb-8">
             <VideoUploader channelId={id} channelName={channel?.channelname} />
           </div>
           <div className="px-4 pb-8">
             <ChannelVideos  />
-          </div>
+          </div></Suspense>
+          
         </div>
       </div>
     );

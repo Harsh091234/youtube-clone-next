@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
 import userroutes from "./routes/auth.js";
-// import videoroutes from "./routes/video.js";
+import videoroutes from "./routes/video.js";
 // import likeroutes from "./routes/like.js";
 // import watchlaterroutes from "./routes/watchlater.js";
 // import historyrroutes from "./routes/history.js";
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 connectDB();
 app.use(bodyParser.json());
 app.use("/api/user", userroutes);
-// app.use("/video", videoroutes);
+app.use("/api/video", videoroutes);
 // app.use("/like", likeroutes);
 // app.use("/watch", watchlaterroutes);
 // app.use("/history", historyrroutes);
