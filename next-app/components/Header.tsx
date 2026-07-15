@@ -16,20 +16,14 @@
   import Channeldialogue from "./ChannelDialogue"
   import { useRouter } from "next/navigation"
   import MobileSidebar from "./MobileSidebar"
-import Sidebar from "./Sidebar"
-  // import { useUser } from "@/lib/AuthContext"
+
+  import { useUser } from "@/context/AuthContext"
 
   const Header = () => {
-    //   const { user, logout, handlegooglesignin } = useUser()
-    const user: any = {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      image: "https://github.com/shadcn.png?height=32&width=32",
-    }
+      const { user, logout, handlegooglesignin } = useUser()
+   
 
-    const handlegooglesignin = () => {}
-    const logout = () => {}
+    
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const [isdialogeopen, setisdialogeopen] = useState(false)

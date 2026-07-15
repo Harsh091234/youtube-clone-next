@@ -1,6 +1,6 @@
 import VideoCard from "./VideoCard";
 
-export default function ChannelVideos({ videos }: any) {
+export default function ChannelVideos({ videos=[] }: any) {
   if (videos.length === 0) {
     return (
       <div className="text-center py-12">
