@@ -15,15 +15,12 @@ import {
 import { Button } from "./ui/button"
 import Channeldialogue from "./ChannelDialogue"
 
-// import { useUser } from "@/lib/AuthContext"
+import { useUser } from "@/context/AuthContext"
 
 const SidebarContent = () => {
-  // const { user } = useUser();
+  const { user } = useUser();
 
-  const user: any = {
-    id: "66a8f2d91b2c4f3a9d8e7f11",
-    channelName: "Harsh Sharma",
-  }
+  
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -74,8 +71,8 @@ const SidebarContent = () => {
               </Button>
             </Link>
 
-            {user.channelName ? (
-              <Link href={`/channel/${user.id}`}>
+            {user.channelname ? (
+              <Link href={`/channel/${user._id}`}>
                 <Button variant="ghost" className="w-full justify-start">
                   <User className="mr-3 h-5 w-5" />
                   Your channel
