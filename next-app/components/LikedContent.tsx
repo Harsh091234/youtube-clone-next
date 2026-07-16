@@ -12,14 +12,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { useUser } from "@/lib/AuthContext";
+import { useUser } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
 import { user } from "@/constants";
 
 export default function LikedVideosContent() {
   const [likedVideos, setLikedVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-//   const { user } = useUser();
+  const { user } = useUser();
 
   useEffect(() => {
     if (user) {
@@ -45,7 +45,7 @@ export default function LikedVideosContent() {
     if (!user) return;
 
     try {
-      console.log("Unliking video:", videoId, "for user:", user.id);
+      console.log("Unliking video:", videoId, "for user:", user._id);
       setLikedVideos(likedVideos.filter((item) => item._id !== likedVideoId));
     } catch (error) {
       console.error("Error unliking video:", error);

@@ -5,9 +5,9 @@ import bodyParser from "body-parser";
 
 import userroutes from "./routes/auth.js";
 import videoroutes from "./routes/video.js";
-// import likeroutes from "./routes/like.js";
+import likeroutes from "./routes/like.js";
 // import watchlaterroutes from "./routes/watchlater.js";
-// import historyrroutes from "./routes/history.js";
+import historyrroutes from "./routes/history.js";
 // import commentroutes from "./routes/comment.js";
 dotenv.config();
 const app = express();
@@ -24,10 +24,10 @@ connectDB();
 app.use(bodyParser.json());
 app.use("/api/user", userroutes);
 app.use("/api/video", videoroutes);
-// app.use("/like", likeroutes);
-// app.use("/watch", watchlaterroutes);
-// app.use("/history", historyrroutes);
-// app.use("/comment", commentroutes);
+app.use("/api/like", likeroutes);
+// app.use("/api/watch", watchlaterroutes);
+app.use("/api/history", historyrroutes);
+// app.use("/api/comment", commentroutes);
 const PORT = process.env.PORT || 5000;
 
 

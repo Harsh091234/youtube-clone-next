@@ -14,36 +14,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import axiosInstance from "@/lib/axiosInstance";
 import { user } from "@/constants";
+import { useUser } from "@/context/AuthContext";
 
 
 export default function HistoryContent() {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-//   const { user } = useUser();
+  const { user } = useUser();
 
-//   useEffect(() => {
-//     if (user) {
-//       loadHistory();
-//     } else {
-//       setLoading(true);
-//     }
-//   }, [user]);
+  useEffect(() => {
+    if (user) {
+      loadHistory();
+    } else {
+      setLoading(true);
+    }
+  }, [user]);
 
-//   const loadHistory = async () => {
-//     if (!user) return;
+  const loadHistory = async () => {
+    if (!user) return;
 
-//     try {
-//       const historyData = await axiosInstance.get(`/history/${user?._id}`);
-//       setHistory(historyData.data);
-//     } catch (error) {
-//       console.error("Error loading history:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   if (loading) {
-//     return <div>Loading history...</div>;
-//   }
+    try {
+      const historyData = await axiosInstance.get(`/history/${user?._id}`);
+      setHistory(historyData.data);
+    } catch (error) {
+      console.error("Error loading history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return <div>Loading history...</div>;
+  }
 
   const handleRemoveFromHistory = async (historyId: string) => {
     try {

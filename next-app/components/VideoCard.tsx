@@ -13,6 +13,7 @@ const VideoCard = ({video}: any) => {
           <video
             src={`${process.env.BACKEND_URL}/${video?.filepath}`}
             className="object-cover group-hover:scale-105 transition-transform duration-200"
+            playsInline
           />
           <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1 rounded">
             10:24

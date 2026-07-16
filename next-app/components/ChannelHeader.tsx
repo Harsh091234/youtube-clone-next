@@ -13,19 +13,19 @@ const ChannelHeader = ({ channel, user }: any) => {
       <div className="px-4 py-6">
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="w-20 h-20 md:w-32 md:h-32">
-            <AvatarFallback className="text-2xl">
-              {channel?.channelname[0]}
+            <AvatarFallback className="text-lg text-center">
+              {user?.channelname}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 space-y-2">
-            <h1 className="text-2xl md:text-4xl font-bold">{channel?.channelname}</h1>
+            <h1 className="text-2xl md:text-4xl font-bold">{user?.channelname}</h1>
             <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-              <span>@{channel?.channelname.toLowerCase().replace(/\s+/g, "")}</span>
+              <span>@{user?.channelname.toLowerCase().replace(/\s+/g, "")}</span>
             </div>
-            {channel?.description && (
+            {user?.description && (
               <p className="text-sm text-gray-700 max-w-2xl">
-                {channel?.description}
+                {user?.description}
               </p>
             )}
           </div>
