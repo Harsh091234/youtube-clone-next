@@ -1,14 +1,18 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IWatchLater extends Document {
-  viewer: mongoose.Types.ObjectId;
+export interface IComment extends Document {
+  userid: mongoose.Types.ObjectId;
   videoid: mongoose.Types.ObjectId;
-  likedon: Date;
+  commentbody?: string;
+  usercommented?: string;
+  commentedon: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const watchLaterSchema = new Schema<IWatchLater>(
+const commentSchema = new Schema<IComment>(
   {
-    viewer: {
+    userid: {
       type: Schema.Types.ObjectId,
       ref: "user",
       required: true,
@@ -18,7 +22,13 @@ const watchLaterSchema = new Schema<IWatchLater>(
       ref: "videofiles",
       required: true,
     },
-    likedon: {
+    commentbody: {
+      type: String,
+    },
+    usercommented: {
+      type: String,
+    },
+    commentedon: {
       type: Date,
       default: Date.now,
     },
@@ -28,4 +38,6 @@ const watchLaterSchema = new Schema<IWatchLater>(
   },
 );
 
-export default mongoose.model<IWatchLater>("watchlater", watchLaterSchema);
+const Comment = mongoose.model<IComment>("comment", commentSchema);
+
+export default Comment;

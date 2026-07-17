@@ -1,0 +1,1 @@
+{"version":3,"file":"history.d.ts","sourceRoot":"","sources":["../../src/controllers/history.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAEjD,eAAO,MAAM,aAAa,QAAe,OAAO,OAAO,QAAQ,gDAW9D,CAAC;AACF,eAAO,MAAM,UAAU,QAAe,OAAO,OAAO,QAAQ,4DAQ3D,CAAC;AACF,eAAO,MAAM,kBAAkB,QAAe,OAAO,OAAO,QAAQ,gDAenE,CAAC"}

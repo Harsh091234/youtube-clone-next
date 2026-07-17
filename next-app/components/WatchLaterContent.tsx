@@ -13,13 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import axiosInstance from "@/lib/axiosInstance";
-import { user } from "@/constants";
-// import { useUser } from "@/lib/AuthContext";
+
+import { useUser } from "@/context/AuthContext";
 
 export default function WatchLaterContent() {
   const [watchLater, setWatchLater] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-//   const { user } = useUser();
+  const { user } = useUser();
 
   useEffect(() => {
     if (user) {
@@ -76,7 +76,7 @@ export default function WatchLaterContent() {
       </div>
     );
   }
-  const videos = "/video/vdo.mp4";
+ 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -93,7 +93,7 @@ export default function WatchLaterContent() {
             <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0">
               <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden">
                 <video
-                  src={`${process.env.BACKEND_URL}/${item.videoid?.filepath}`}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL2}/${item.videoid?.filepath}`}
                   className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </div>

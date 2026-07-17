@@ -2,21 +2,47 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { useRef, useState } from "react";
+import { isNull } from "util";
 
 const videos = "/video/vdo.mp4";    
 
 const VideoCard = ({video}: any) => {
+  const [duration, setDuration] = useState<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const formatDuration = (seconds: number) => {
+  const totalSeconds = Math.floor(seconds);
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${secs.toString().padStart(2, "0")}`;
+};
+ const handleLoadedMetadata = () => {
+  if (videoRef.current) {
+    setDuration(videoRef.current.duration);
+  }
+};
   return (
     <Link href={`/watch/${video?._id}`} className="group">
       <div className="space-y-3">
         <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
           <video
-            src={`${process.env.BACKEND_URL}/${video?.filepath}`}
+          ref={videoRef}
+            src={`${process.env.NEXT_PUBLIC_BACKEND_URL2}/${video?.filepath}`}
             className="object-cover group-hover:scale-105 transition-transform duration-200"
             playsInline
+            onLoadedMetadata={handleLoadedMetadata}
           />
           <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1 rounded">
-            10:24
+            {duration !== null ? formatDuration(duration) : ""}
           </div>
         </div>
         <div className="flex gap-3">

@@ -51,7 +51,7 @@ export default function LikedVideosContent() {
       console.error("Error unliking video:", error);
     }
   };
-
+  
   if (!user) {
     return (
       <div className="text-center py-12">
@@ -77,7 +77,7 @@ export default function LikedVideosContent() {
       </div>
     );
   }
-  const videos = "/video/vdo.mp4";
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -94,7 +94,7 @@ export default function LikedVideosContent() {
             <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0">
               <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden">
                 <video
-                  src={`${process.env.BACKEND_URL}/${item.videoid?.filepath}`}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL2}/${item.videoid?.filepath}`}
                   className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </div>
