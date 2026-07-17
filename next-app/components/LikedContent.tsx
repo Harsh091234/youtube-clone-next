@@ -79,67 +79,94 @@ export default function LikedVideosContent() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-600">{likedVideos.length} videos</p>
-        <Button className="flex items-center gap-2">
-          <Play className="w-4 h-4" />
-          Play all
-        </Button>
-      </div>
+  <div className="w-full space-y-4">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-gray-600">
+        {likedVideos.length} videos
+      </p>
 
-      <div className="space-y-4">
-        {likedVideos.map((item) => (
-          <div key={item._id} className="flex gap-4 group">
-            <Link href={`/watch/${item.videoid._id}`} className="flex-shrink-0">
-              <div className="relative w-40 aspect-video bg-gray-100 rounded overflow-hidden">
-                <video
-                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL2}/${item.videoid?.filepath}`}
-                  className="object-cover group-hover:scale-105 transition-transform duration-200"
-                />
-              </div>
-            </Link>
+      <Button className="w-full sm:w-fit flex items-center justify-center gap-2">
+        <Play className="h-4 w-4" />
+        Play all
+      </Button>
+    </div>
 
-            <div className="flex-1 min-w-0">
+    <div className="space-y-5">
+      {likedVideos.map((item) => (
+        <div
+          key={item._id}
+          className="group relative flex flex-col gap-4 sm:flex-row"
+        >
+
+          <Link
+            href={`/watch/${item.videoid._id}`}
+            className="w-full sm:w-56 flex-shrink-0"
+          >
+            <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
+              <video
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL2}/${item.videoid?.filepath}`}
+                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+              />
+            </div>
+          </Link>
+
+    
+          <div className="flex flex-1 justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <Link href={`/watch/${item.videoid._id}`}>
-                <h3 className="font-medium text-sm line-clamp-2 group-hover:text-blue-600 mb-1">
+                <h3 className="mb-1 line-clamp-2 text-sm font-medium hover:text-blue-600 sm:text-base">
                   {item.videoid.videotitle}
                 </h3>
               </Link>
+
               <p className="text-sm text-gray-600">
                 {item.videoid.videochanel}
               </p>
+
               <p className="text-sm text-gray-600">
                 {item.videoid.views.toLocaleString()} views •{" "}
                 {formatDistanceToNow(new Date(item.videoid.createdAt))} ago
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+
+              <p className="mt-1 text-xs text-gray-500">
                 Liked {formatDistanceToNow(new Date(item.createdAt))} ago
               </p>
             </div>
 
+        
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="opacity-0 group-hover:opacity-100"
+                  className="
+                    h-9 w-9
+                    flex-shrink-0
+                    self-start
+                    opacity-100
+                    sm:opacity-0
+                    sm:group-hover:opacity-100
+                    transition-opacity
+                  "
                 >
-                  <MoreVertical className="w-4 h-4" />
+                  <MoreVertical className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => handleUnlikeVideo(item.videoid._id, item._id)}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Remove from liked videos
-                </DropdownMenuItem>
-              </DropdownMenuContent>
+
+              <DropdownMenuContent align="end" className="w-56">
+  <DropdownMenuItem
+    onClick={() => handleUnlikeVideo(item.videoid._id, item._id)}
+    className="flex items-start gap-2 whitespace-normal"
+  >
+    <X className="mt-0.5 h-4 w-4 flex-shrink-0" />
+    <span>Remove from liked videos</span>
+  </DropdownMenuItem>
+</DropdownMenuContent>
             </DropdownMenu>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }
