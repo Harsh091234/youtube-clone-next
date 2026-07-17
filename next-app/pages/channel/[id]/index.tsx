@@ -37,7 +37,7 @@ const Index = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="flex-1 min-h-screen bg-white">
+    <div className="max-sm:w-full flex-1  min-h-screen bg-white">
       <ChannelHeader channel={user?.channelname} user={user} />
       <Channeltabs />
 

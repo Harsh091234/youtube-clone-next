@@ -11,7 +11,7 @@ const ChannelHeader = ({ channel, user }: any) => {
 
       {/* Channel Info */}
       <div className="px-4 py-6">
-        <div className="flex flex-col md:flex-row gap-6 items-start">
+        <div className="flex flex-col md:flex-row gap-6 items-center sm:items-start">
           <Avatar className="w-20 h-20 md:w-32 md:h-32">
             <AvatarFallback className="text-lg text-center">
               {user?.channelname}
@@ -35,9 +35,10 @@ const ChannelHeader = ({ channel, user }: any) => {
               <Button
                 onClick={() => setIsSubscribed(!isSubscribed)}
                 variant={isSubscribed ? "outline" : "default"}
-                className={
-                  isSubscribed ? "bg-gray-100" : "bg-red-600 hover:bg-red-700"
-                }
+                className={`w-full ${isSubscribed
+                    ? "bg-gray-100"
+                    : "bg-red-600 hover:bg-red-700"
+                  }`}
               >
                 {isSubscribed ? "Subscribed" : "Subscribe"}
               </Button>
