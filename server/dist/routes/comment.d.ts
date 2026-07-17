@@ -1,4 +1,0 @@
-import { Router } from "express";
-declare const routes: Router;
-export default routes;
-//# sourceMappingURL=comment.d.ts.map
