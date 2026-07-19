@@ -21,6 +21,7 @@ interface User {
   email: string;
   image: string;
   channelname: string;
+  preferredLanguage: string;
 }
 
 interface UserContextType {

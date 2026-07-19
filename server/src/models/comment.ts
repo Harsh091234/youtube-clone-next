@@ -8,6 +8,8 @@ export interface IComment extends Document {
   commentedon: Date;
   createdAt: Date;
   updatedAt: Date;
+  likes: mongoose.Types.ObjectId[];
+  dislikes: mongoose.Types.ObjectId[];
 }
 
 const commentSchema = new Schema<IComment>(
@@ -32,6 +34,18 @@ const commentSchema = new Schema<IComment>(
       type: Date,
       default: Date.now,
     },
+     likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    dislikes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

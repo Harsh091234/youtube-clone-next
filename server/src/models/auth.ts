@@ -7,6 +7,7 @@ export interface IUser extends Document {
   description?: string;
   image?: string;
   joinedon: Date;
+  preferredLanguage: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -30,6 +31,10 @@ const userSchema = new Schema<IUser>({
     type: Date,
     default: Date.now,
   },
+  preferredLanguage:{
+    type:String,
+    default:"en"
+  }
 });
 
 const User = model<IUser>("User", userSchema);

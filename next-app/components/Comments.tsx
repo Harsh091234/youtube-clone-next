@@ -3,8 +3,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { formatDistanceToNow } from "date-fns";
-// import { useUser } from "@/lib/AuthContext";
+import { useUser } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
 interface Comment {
   _id: string;
   videoid: string;
@@ -12,124 +13,162 @@ interface Comment {
   commentbody: string;
   usercommented: string;
   commentedon: string;
+   likes?: string[];
+  dislikes?: string[];
 }
 
-const user: any = {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      image: "https://github.com/shadcn.png?height=32&width=32",
-    }
 
 const Comments = ({ videoId }: any) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
-//   const { user } = useUser();
+  const { user } = useUser();
   const [loading, setLoading] = useState(true);
-  const fetchedComments = [
-    {
-      _id: "1",
-      videoid: videoId,
-      userid: "1",
-      commentbody: "Great video! Really enjoyed watching this.",
-      usercommented: "John Doe",
-      commentedon: new Date(Date.now() - 3600000).toISOString(),
-    },
-    {
-      _id: "2",
-      videoid: videoId,
-      userid: "2",
-      commentbody: "Thanks for sharing this amazing content!",
-      usercommented: "Jane Smith",
-      commentedon: new Date(Date.now() - 7200000).toISOString(),
-    },
-  ];
-//   useEffect(() => {
-//     loadComments();
-//   }, [videoId]);
+  
+  useEffect(() => {
+    loadComments();
+  }, [videoId]);
 
-//   const loadComments = async () => {
-//     try {
-//       const res = await axiosInstance.get(`/comment/${videoId}`);
-//       setComments(res.data);
-//     } catch (error) {
-//       console.log(error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   if (loading) {
-//     return <div>Loading history...</div>;
-//   }
-//   const handleSubmitComment = async () => {
-//     if (!user || !newComment.trim()) return;
+  const loadComments = async () => {
+    try {
+      const res = await axiosInstance.get(`/comment/${videoId}`);
+      setComments(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return <div>Loading history...</div>;
+  }
+  const handleSubmitComment = async () => {
+    if (!user || !newComment.trim()) return;
 
-//     setIsSubmitting(true);
-//     try {
-//       const res = await axiosInstance.post("/comment/postcomment", {
-//         videoid: videoId,
-//         userid: user._id,
-//         commentbody: newComment,
-//         usercommented: user.name,
-//       });
-//       if (res.data.comment) {
-//         const newCommentObj: Comment = {
-//           _id: Date.now().toString(),
-//           videoid: videoId,
-//           userid: user._id,
-//           commentbody: newComment,
-//           usercommented: user.name || "Anonymous",
-//           commentedon: new Date().toISOString(),
-//         };
-//         setComments([newCommentObj, ...comments]);
-//       }
-//       setNewComment("");
-//     } catch (error) {
-//       console.error("Error adding comment:", error);
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
+    setIsSubmitting(true);
+    try {
+      const res = await axiosInstance.post("/comment/postcomment", {
+        videoid: videoId,
+        userid: user._id,
+        commentbody: newComment,
+        usercommented: user.name,
+      });
+      if (res.data.comment) {
+        const newCommentObj: Comment = {
+          _id: Date.now().toString(),
+          videoid: videoId,
+          userid: user._id!,
+          commentbody: newComment,
+          usercommented: user.name || "Anonymous",
+          commentedon: new Date().toISOString(),
+        };
+        setComments([newCommentObj, ...comments]);
+      }
+      setNewComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-//   const handleEdit = (comment: Comment) => {
-//     setEditingCommentId(comment._id);
-//     setEditText(comment.commentbody);
-//   };
+  const handleEdit = (comment: Comment) => {
+    setEditingCommentId(comment._id);
+    setEditText(comment.commentbody);
+  };
 
-//   const handleUpdateComment = async () => {
-//     if (!editText.trim()) return;
-//     try {
-//       const res = await axiosInstance.post(
-//         `/comment/editcomment/${editingCommentId}`,
-//         { commentbody: editText }
-//       );
-//       if (res.data) {
-//         setComments((prev) =>
-//           prev.map((c) =>
-//             c._id === editingCommentId ? { ...c, commentbody: editText } : c
-//           )
-//         );
-//         setEditingCommentId(null);
-//         setEditText("");
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+  const handleUpdateComment = async () => {
+    if (!editText.trim()) return;
+    try {
+      const res = await axiosInstance.post(
+        `/comment/editcomment/${editingCommentId}`,
+        { commentbody: editText }
+      );
+      if (res.data) {
+        setComments((prev) =>
+          prev.map((c) =>
+            c._id === editingCommentId ? { ...c, commentbody: editText } : c
+          )
+        );
+        setEditingCommentId(null);
+        setEditText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-//   const handleDelete = async (id: string) => {
-//     try {
-//       const res = await axiosInstance.delete(`/comment/deletecomment/${id}`);
-//       if (res.data.comment) {
-//         setComments((prev) => prev.filter((c) => c._id !== id));
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await axiosInstance.delete(`/comment/deletecomment/${id}`);
+      if (res.data.comment) {
+        setComments((prev) => prev.filter((c) => c._id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLike = async (commentId: string) => {
+  try {
+    const res = await axiosInstance.put(`/comment/likecomment/${commentId}`, {
+      id: user?._id,
+    });
+
+    setComments((prev) =>
+      prev.map((comment) =>
+        comment._id === commentId ? res.data.comment : comment
+      )
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleDislike = async (commentId: string) => {
+  try {
+    const res = await axiosInstance.put(`/comment/dislikecomment/${commentId}`,{
+      id: user?._id,
+    });
+
+    setComments((prev) =>
+      prev.map((comment) =>
+        comment._id === commentId ? res.data.comment : comment
+      )
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleTranslate = async(commentId:string)=>{
+
+  try {
+
+    const res = await axiosInstance.post(
+      "/comment/translate",
+      {
+        commentId,
+        targetLanguage: user?.preferredLanguage || "en"
+      }
+    );
+
+
+    setTranslations(prev=>({
+      ...prev,
+      [commentId]:res.data.translatedText
+    }));
+
+
+  } catch(error){
+    console.log(error);
+  }
+
+};
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">{comments.length} Comments</h2>
@@ -156,9 +195,9 @@ const Comments = ({ videoId }: any) => {
                 Cancel
               </Button>
               <Button
-                // onClick={
-                //     handleSubmitComment
-                // }
+                onClick={
+                    handleSubmitComment
+                }
                 disabled={!newComment.trim() || isSubmitting}
               >
                 Comment
@@ -197,7 +236,7 @@ const Comments = ({ videoId }: any) => {
                     />
                     <div className="flex gap-2 justify-end">
                       <Button
-                        // onClick={handleUpdateComment}
+                       onClick={handleUpdateComment}
                         disabled={!editText.trim()}
                       >
                         Save
@@ -215,16 +254,64 @@ const Comments = ({ videoId }: any) => {
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm">{comment.commentbody}</p>
+                   <p className="text-sm">
+  {translations[comment._id] || comment.commentbody}
+</p>
+
+{translations[comment._id] ? (
+  <button
+    onClick={() => {
+      setTranslations((prev) => {
+        const updated = { ...prev };
+        delete updated[comment._id];
+        return updated;
+      });
+    }}
+    className="text-blue-500 text-sm"
+  >
+    Show Original
+  </button>
+) : (
+  <button
+    onClick={() => handleTranslate(comment._id)}
+    className="text-blue-500 text-sm"
+  >
+    Translate
+  </button>
+)}
+                    <div className="flex items-center gap-4 mt-2 text-sm">
+  <button
+    onClick={() => handleLike(comment._id)}
+    className={`text-black ${
+      comment?.likes?.includes(user?._id || "")
+         ? "fill-black"
+        : ""
+    }`}
+  >
+    <ThumbsUp className="h-4 w-4"/> {comment?.likes?.length}
+  </button>
+
+  <button
+    onClick={() => handleDislike(comment._id)}
+    className={`text-black ${
+      comment?.dislikes?.includes(user?._id || "")
+        ? "fill-black"
+        : ""
+    }`}
+  >
+    <ThumbsDown className="h-4 w-4"/> {comment?.dislikes?.length}
+  </button>
+</div>
                     {comment.userid === user?._id && (
                       <div className="flex gap-2 mt-2 text-sm text-gray-500">
+
                         <button
-                         //onClick={() => handleEdit(comment)}
+                        onClick={() => handleEdit(comment)}
                          >
                           Edit
                         </button>
                         <button 
-                         // onClick={() => handleDelete(comment._id)}
+                        onClick={() => handleDelete(comment._id)}
                         >
                           Delete
                         </button>
