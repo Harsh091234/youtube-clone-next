@@ -31,7 +31,7 @@ export const updateProfile = async (
   res: Response,
 ): Promise<void> => {
   const id  = req.params.id as string;
-  const { channelname, description } = req.body;
+  const { channelname, description, preferredLanguage } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400).json({ message: "User unavailable..." });
@@ -45,9 +45,10 @@ export const updateProfile = async (
         $set: {
           channelname,
           description,
+          preferredLanguage,
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     if (!updatedUser) {

@@ -35,10 +35,10 @@ const Index = () => {
   }, []);
 
   if (loading) return <div>Loading...</div>;
-
+  if(!user) return <div>Loading...</div>;
   return (
     <div className="max-sm:w-full flex-1  min-h-screen bg-white">
-      <ChannelHeader channel={user?.channelname} user={user} />
+      <ChannelHeader channelId={id} preferredLanguage={user?.preferredLanguage} channel={user?.channelname} user={user} />
       <Channeltabs />
 
       <div className="px-4 pb-8">

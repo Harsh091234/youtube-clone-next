@@ -6,4 +6,5 @@ const routes: Router = express.Router();
 
 routes.post("/login", login);
 routes.patch("/update/:id", updateProfile);
+
 export default routes;
