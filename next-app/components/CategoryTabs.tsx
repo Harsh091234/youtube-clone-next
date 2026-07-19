@@ -25,7 +25,7 @@ const CategoryTabs = () => {
 
  return (
     <div className="sticky top-14 z-30 bg-white">
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+      <div className="py-2 flex gap-2 overflow-x-auto scrollbar-hide">
         {categories.map((category) => (
           <Button
             key={category}
