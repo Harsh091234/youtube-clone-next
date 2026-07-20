@@ -8,6 +8,8 @@ import {
   likeComment,
   translateComment,
   reportComment,
+  getFlaggedComments,
+  approveComment,
 } from "../controllers/comment.js";
 
 const routes: Router = express.Router();
@@ -19,6 +21,13 @@ routes.put("/likecomment/:id", likeComment);
 routes.put("/dislikecomment/:id", dislikeComment);
 routes.post("/reportcomment/:id", reportComment);
 routes.post("/translate", translateComment);
-
+routes.get(
+  "/flaggedcomments",
+  getFlaggedComments
+);
+routes.put(
+  "/approvecomment/:id",
+  approveComment
+);
 
 export default routes;

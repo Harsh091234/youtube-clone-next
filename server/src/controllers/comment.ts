@@ -7,12 +7,17 @@ import { validateComment } from "../lib/validatorHelper.js";
 export const postcomment = async (req: Request, res: Response) => {
   const commentdata = req.body;
   const error = validateComment(commentdata.commentbody);
+  const newComment = new comment({
+    ...commentdata,
+  });
   if (error) {
-    return res.status(400).json({ message: error });
+    newComment.status = "flagged";
+    newComment.flagReason = error;
+    newComment.flaggedAt = new Date();
   }
-  const postcomment = new comment(commentdata);
+
   try {
-    await postcomment.save();
+    await newComment.save();
     return res.status(200).json({ comment: true });
   } catch (error) {
     console.error(" error:", error);
@@ -23,7 +28,10 @@ export const postcomment = async (req: Request, res: Response) => {
 export const getallcomment = async (req: Request, res: Response) => {
   const videoid = req.params.videoid as string;
   try {
-    const commentvideo = await comment.find({ videoid: videoid });
+    const commentvideo = await comment.find({
+      videoid: videoid,
+      status: "approved",
+    });
     return res.status(200).json(commentvideo);
   } catch (error) {
     console.error(" error:", error);
@@ -209,6 +217,68 @@ export const reportComment = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       message: "Internal server error",
+    });
+  }
+};
+
+export const getFlaggedComments = async (req: Request, res: Response) => {
+  try {
+    const flaggedComments = await comment
+      .find({
+        status: "flagged",
+      })
+      .sort({
+        flaggedAt: -1,
+      });
+
+    return res.status(200).json({
+      success: true,
+      comments: flaggedComments,
+    });
+  } catch (error) {
+    console.error("Server Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong ",
+    });
+  }
+};
+
+export const approveComment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const updatedComment = await comment.findByIdAndUpdate(
+      id,
+      {
+        status: "approved",
+        flagReason: null,
+        flaggedAt: null,
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!updatedComment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment approved.",
+      comment: updatedComment,
+    });
+  } catch (error) {
+    console.error("Server Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
     });
   }
 };

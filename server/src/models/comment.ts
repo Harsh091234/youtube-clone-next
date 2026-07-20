@@ -16,6 +16,9 @@ export interface IComment extends Document {
     description?: string;
     createdAt: Date;
   }[];
+  status: string;
+  flagReason: string | null;
+  flaggedAt: Date | null;
 }
 
 const commentSchema = new Schema<IComment>(
@@ -78,6 +81,22 @@ const commentSchema = new Schema<IComment>(
         createdAt: {
           type: Date,
           default: Date.now,
+        },
+        // moderation fields
+        status: {
+          type: String,
+          enum: ["approved", "flagged", "removed"],
+          default: "approved",
+        },
+
+        flagReason: {
+          type: String,
+          default: null,
+        },
+
+        flaggedAt: {
+          type: Date,
+          default: null,
         },
       },
     ],
