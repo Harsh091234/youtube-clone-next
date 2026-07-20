@@ -6,6 +6,31 @@ import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { MoreVertical } from "lucide-react";
+
 interface Comment {
   _id: string;
   videoid: string;
@@ -21,6 +46,10 @@ interface Comment {
 const Comments = ({ videoId }: any) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [reportOpen, setReportOpen] = useState(false);
+const [reportCommentId, setReportCommentId] = useState("");
+const [reportReason, setReportReason] = useState("");
+const [reportDescription, setReportDescription] = useState("");
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
@@ -169,6 +198,37 @@ const handleTranslate = async(commentId:string)=>{
 
 };
 
+
+const openReportDialog = (commentId: string) => {
+  setReportCommentId(commentId);
+  setReportReason("");
+  setReportDescription("");
+  setReportOpen(true);
+};
+
+const submitReport = async () => {
+  if (!reportReason) return;
+
+  try {
+    await axiosInstance.post(
+      `/comment/reportcomment/${reportCommentId}`,
+      {
+        userId: user?._id,
+        reason: reportReason,
+        description: reportDescription,
+      }
+    );
+
+    setReportOpen(false);
+
+    setReportReason("");
+    setReportDescription("");
+
+    alert("Comment reported.");
+  } catch (err) {
+    console.log(err);
+  }
+};
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">{comments.length} Comments</h2>
@@ -184,7 +244,7 @@ const handleTranslate = async(commentId:string)=>{
               placeholder="Add a comment..."
               value={newComment}
               onChange={(e: any) => setNewComment(e.target.value)}
-              className="min-h-[80px] resize-none border-0 border-b-2 rounded-none focus-visible:ring-0"
+              className="min-h-[30px] resize-none border-0 border-b-2 rounded-none focus-visible:ring-0"
             />
             <div className="flex gap-2 justify-end">
               <Button
@@ -229,29 +289,26 @@ const handleTranslate = async(commentId:string)=>{
                 </div>
 
                 {editingCommentId === comment._id ? (
-                  <div className="space-y-2">
-                    <Textarea
-                      value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                    />
-                    <div className="flex gap-2 justify-end">
-                      <Button
-                       onClick={handleUpdateComment}
-                        disabled={!editText.trim()}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setEditingCommentId(null);
-                          setEditText("");
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
+             <div className="space-y-2">
+    <Textarea
+      value={editText}
+      onChange={(e) => setEditText(e.target.value)}
+    />
+
+    <div className="flex justify-end gap-2">
+      <Button onClick={handleUpdateComment}>Save</Button>
+
+      <Button
+        variant="ghost"
+        onClick={() => {
+          setEditingCommentId(null);
+          setEditText("");
+        }}
+      >
+        Cancel
+      </Button>
+    </div>
+  </div>
                 ) : (
                   <>
                    <p className="text-sm">
@@ -279,30 +336,35 @@ const handleTranslate = async(commentId:string)=>{
     Translate
   </button>
 )}
-                    <div className="flex items-center gap-4 mt-2 text-sm">
+    <div className="mt-2 flex items-center gap-4 text-sm">
   <button
     onClick={() => handleLike(comment._id)}
-    className={`text-black ${
-      comment?.likes?.includes(user?._id || "")
-         ? "fill-black"
-        : ""
-    }`}
+    className="flex items-center gap-1 text-black"
   >
-    <ThumbsUp className="h-4 w-4"/> {comment?.likes?.length}
+    <ThumbsUp
+      className={`h-4 w-4 ${
+        comment?.likes?.includes(user?._id || "")
+          ? "fill-black"
+          : "fill-none"
+      }`}
+    />
+    <span>{comment?.likes?.length ?? 0}</span>
   </button>
 
   <button
     onClick={() => handleDislike(comment._id)}
-    className={`text-black ${
-      comment?.dislikes?.includes(user?._id || "")
-        ? "fill-black"
-        : ""
-    }`}
+    className="flex items-center gap-1 text-black"
   >
-    <ThumbsDown className="h-4 w-4"/> {comment?.dislikes?.length}
+    <ThumbsDown
+      className={`h-4 w-4 ${
+        comment?.dislikes?.includes(user?._id || "")
+          ? "fill-black"
+          : "fill-none"
+      }`}
+    />
+    <span>{comment?.dislikes?.length ?? 0}</span>
   </button>
-</div>
-                    {comment.userid === user?._id && (
+</div>           {comment.userid === user?._id && (
                       <div className="flex gap-2 mt-2 text-sm text-gray-500">
 
                         <button
@@ -315,6 +377,13 @@ const handleTranslate = async(commentId:string)=>{
                         >
                           Delete
                         </button>
+                        <Button
+  variant="ghost"
+  size="sm"
+  onClick={() => openReportDialog(comment._id)}
+>
+  Report
+</Button>
                       </div>
                     )}
                   </>

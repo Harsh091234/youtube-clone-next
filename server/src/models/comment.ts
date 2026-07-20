@@ -10,6 +10,12 @@ export interface IComment extends Document {
   updatedAt: Date;
   likes: mongoose.Types.ObjectId[];
   dislikes: mongoose.Types.ObjectId[];
+  reports?: {
+    user: mongoose.Types.ObjectId;
+    reason: string;
+    description?: string;
+    createdAt: Date;
+  }[];
 }
 
 const commentSchema = new Schema<IComment>(
@@ -34,7 +40,7 @@ const commentSchema = new Schema<IComment>(
       type: Date,
       default: Date.now,
     },
-     likes: [
+    likes: [
       {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -44,6 +50,35 @@ const commentSchema = new Schema<IComment>(
       {
         type: Schema.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    reports: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        reason: {
+          type: String,
+          required: true,
+          enum: [
+            "Spam",
+            "Harassment",
+            "Hate Speech",
+            "Violence",
+            "Misinformation",
+            "Other",
+          ],
+        },
+        description: {
+          type: String,
+          default: "",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
   },

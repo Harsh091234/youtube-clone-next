@@ -63,18 +63,22 @@ export const likeComment = async (req: Request, res: Response) => {
     if (!commenttolike) {
       return res.status(400).json({ message: "Comment not found" });
     }
-    const userId = req.body.id;
+    const userId = req.body.id.toString();
 
     const liked = commenttolike.likes.includes(userId);
     const disliked = commenttolike.dislikes.includes(userId);
 
     if (liked) {
-      commenttolike.likes.pull(userId);
+      commenttolike.likes = commenttolike.likes.filter(
+        (id) => id.toString() !== userId,
+      );
     } else {
       commenttolike.likes.push(userId);
 
       if (disliked) {
-        commenttolike.dislikes.pull(userId);
+        commenttolike.dislikes = commenttolike.likes.filter(
+          (id) => id.toString() !== userId,
+        );
       }
     }
 
@@ -95,18 +99,22 @@ export const dislikeComment = async (req: Request, res: Response) => {
     if (!comment1) {
       return res.status(400).json({ message: "Comment not found" });
     }
-    const userId = req.body.id;
+    const userId = req.body.id.toString();
 
-    const liked = comment1.likes.includes(userId);
-    const disliked = comment1.dislikes.includes(userId);
+    const liked = comment1.likes.some((id) => id.toString() === userId);
+    const disliked = comment1.dislikes.some((id) => id.toString() === userId);
 
     if (disliked) {
-      comment1.dislikes.pull(userId);
+      comment1.dislikes = comment1.dislikes.filter(
+        (id) => id.toString() !== userId,
+      );
     } else {
       comment1.dislikes.push(userId);
 
       if (liked) {
-        comment1.likes.pull(userId);
+        comment1.likes = comment1.likes.filter(
+          (id) => id.toString() !== userId,
+        );
       }
     }
 
@@ -152,6 +160,50 @@ export const translateComment = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       message: "Something went wrong",
+    });
+  }
+};
+
+export const reportComment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { userId, reason, description } = req.body;
+
+    const commentToReport = await comment.findById(id);
+
+    if (!commentToReport) {
+      return res.status(404).json({
+        message: "Comment not found",
+      });
+    }
+
+    const alreadyReported = commentToReport.reports?.some(
+      (report: any) => report.user.toString() === userId,
+    );
+
+    if (alreadyReported) {
+      return res.status(400).json({
+        message: "You have already reported this comment.",
+      });
+    }
+
+    commentToReport.reports?.push({
+      user: userId,
+      reason,
+      description,
+      createdAt: new Date(),
+    });
+
+    await commentToReport.save();
+
+    return res.status(200).json({
+      message: "Comment reported successfully.",
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
 };

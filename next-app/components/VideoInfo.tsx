@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -22,12 +22,6 @@ const VideoInfo = ({ video }: any) => {
   const { user } = useUser();
   const [isWatchLater, setIsWatchLater] = useState(false);
 
-  // const user: any = {
-  //   id: "1",
-  //   name: "John Doe",
-  //   email: "john@example.com",
-  //   image: "https://github.com/shadcn.png?height=32&width=32",
-  // };
   useEffect(() => {
     setlikes(video.Like || 0);
     setDislikes(video.Dislike || 0);
@@ -114,12 +108,13 @@ const VideoInfo = ({ video }: any) => {
       console.log(error);
     }
   };
+  
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-semibold">{video.videotitle}</h1>
 
      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-  {/* Channel Info */}
+  
   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
     <div className="flex items-center gap-3">
       <Avatar className="w-10 h-10">
