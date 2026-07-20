@@ -6,30 +6,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { MoreVertical } from "lucide-react";
+import ReportDialogoue from "./ReportDialogoue";
 
 interface Comment {
   _id: string;
@@ -48,14 +26,15 @@ const Comments = ({ videoId }: any) => {
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [reportOpen, setReportOpen] = useState(false);
 const [reportCommentId, setReportCommentId] = useState("");
-const [reportReason, setReportReason] = useState("");
-const [reportDescription, setReportDescription] = useState("");
+
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
+  
   
   useEffect(() => {
     loadComments();
@@ -76,7 +55,7 @@ const [reportDescription, setReportDescription] = useState("");
   }
   const handleSubmitComment = async () => {
     if (!user || !newComment.trim()) return;
-
+    setError("");
     setIsSubmitting(true);
     try {
       const res = await axiosInstance.post("/comment/postcomment", {
@@ -97,8 +76,12 @@ const [reportDescription, setReportDescription] = useState("");
         setComments([newCommentObj, ...comments]);
       }
       setNewComment("");
-    } catch (error) {
-      console.error("Error adding comment:", error);
+    } catch (error: any) {
+      
+       setError(
+    error?.response?.data?.message ||
+      "Something went wrong."
+  );
     } finally {
       setIsSubmitting(false);
     }
@@ -201,34 +184,10 @@ const handleTranslate = async(commentId:string)=>{
 
 const openReportDialog = (commentId: string) => {
   setReportCommentId(commentId);
-  setReportReason("");
-  setReportDescription("");
+
   setReportOpen(true);
 };
 
-const submitReport = async () => {
-  if (!reportReason) return;
-
-  try {
-    await axiosInstance.post(
-      `/comment/reportcomment/${reportCommentId}`,
-      {
-        userId: user?._id,
-        reason: reportReason,
-        description: reportDescription,
-      }
-    );
-
-    setReportOpen(false);
-
-    setReportReason("");
-    setReportDescription("");
-
-    alert("Comment reported.");
-  } catch (err) {
-    console.log(err);
-  }
-};
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">{comments.length} Comments</h2>
@@ -246,6 +205,7 @@ const submitReport = async () => {
               onChange={(e: any) => setNewComment(e.target.value)}
               className="min-h-[30px] resize-none border-0 border-b-2 rounded-none focus-visible:ring-0"
             />
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex gap-2 justify-end">
               <Button
                 variant="ghost"
@@ -393,6 +353,7 @@ const submitReport = async () => {
           ))
         )}
       </div>
+      <ReportDialogoue reportOpen={reportOpen} setReportOpen={setReportOpen} userId={user?._id} commentId={reportCommentId}/>
     </div>
   );
 };

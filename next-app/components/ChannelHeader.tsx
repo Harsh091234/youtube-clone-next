@@ -17,7 +17,7 @@ const languages = [
 ];
 
 
-const ChannelHeader = ({channelId, channel, user, preferredLanguage }: any) => {
+const ChannelHeader = ({channelId, user, preferredLanguage }: any) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [channelName, setChannelName] = useState(

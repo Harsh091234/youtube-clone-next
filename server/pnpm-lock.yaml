@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@2toad/profanity':
+        specifier: ^3.3.0
+        version: 3.3.0
       axios:
         specifier: ^1.18.1
         version: 1.18.1
@@ -65,6 +68,10 @@ importers:
         version: 5.9.2
 
 packages:
+
+  '@2toad/profanity@3.3.0':
+    resolution: {integrity: sha512-hBptHbB6Regs5AgtHiLr/WfgHRh6ZGdA9EexOWU14n2eNjQekvK9/gg18iFUYvL2WrNb4X3Ci0bzgzJXhzmpNQ==}
+    engines: {node: '>=12'}
 
   '@esbuild/aix-ppc64@0.28.1':
     resolution: {integrity: sha512-Svl7tq8k/08+p6CXPpRjQ1fKX+1odH/BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ==}
@@ -794,6 +801,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
 snapshots:
+
+  '@2toad/profanity@3.3.0': {}
 
   '@esbuild/aix-ppc64@0.28.1':
     optional: true

@@ -33,7 +33,9 @@ const index = () => {
   if (loading) {
     return <div>Loading..</div>;
   }
-  
+  if (!id || typeof id !== "string") {
+    return <div>Loading..</div>;
+  }
   if (!videos) {
     return <div>Video not found</div>;
   }

@@ -2,9 +2,14 @@ import comment from "../models/comment.js";
 import mongoose from "mongoose";
 import type { Request, Response } from "express";
 import { translateText } from "../lib/translate.js";
+import { validateComment } from "../lib/validatorHelper.js";
 
 export const postcomment = async (req: Request, res: Response) => {
   const commentdata = req.body;
+  const error = validateComment(commentdata.commentbody);
+  if (error) {
+    return res.status(400).json({ message: error });
+  }
   const postcomment = new comment(commentdata);
   try {
     await postcomment.save();
