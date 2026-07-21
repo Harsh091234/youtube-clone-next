@@ -2,55 +2,72 @@
 import type { Request, Response } from "express";
 import Download from "../models/download.js";
 import User from "../models/auth.js";
+import Video from "../models/video.js";
+import type { IPlan } from "../models/plan.js";
+
+
+
 export const downloadVideo = async (req: Request, res: Response) => {
-  try {
+    try {
+   
     const { userId, videoId } = req.body;
-
-    const user = await User.findById(userId).populate("plan");
-
-    if (!user)
+    
+    const user = await User.findById(userId).populate("plan")
+    const video = await Video.findById(videoId)
+   
+    if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
+    }
 
-    if (!user.plan?.isUnlimited) {
+    const plan = user.plan as IPlan;
+    
+    if (!plan.isUnlimited) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       const count = await Download.countDocuments({
         user: userId,
-
         status: "SUCCESS",
-
         downloadedAt: {
           $gte: today,
         },
       });
 
-      if (count >= user?.plan?.dailyLimit) {
+      if (count >= plan.dailyDownloadLimit) {
         await Download.create({
           user: userId,
           video: videoId,
           status: "BLOCKED",
+          plan: plan._id,
         });
 
         return res.status(403).json({
-          message: "Daily limit reached",
+          success: false,
+          message: "Daily download limit reached",
         });
       }
     }
 
+    console.log("userid:", userId, "videoId:", videoId)
     await Download.create({
       user: userId,
       video: videoId,
       status: "SUCCESS",
+      plan: plan._id,
     });
 
-    res.json({
+    return res.json({
       success: true,
       message: "Download allowed",
+      fileurl: video?.filepath
     });
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      err,
+    });
   }
 };

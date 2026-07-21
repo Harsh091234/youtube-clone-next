@@ -1,6 +1,6 @@
-import  {Router} from "express";
+import { Router } from "express";
 
-const { downloadVideo } = require("../controllers/download.js");
+import { downloadVideo } from "../controllers/download.js";
 const routes: Router = Router();
 
 routes.post("/", downloadVideo);

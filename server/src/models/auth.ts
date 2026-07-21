@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Types, Document } from "mongoose";
 import type { IPlan } from "./plan.js";
 
 export interface IUser extends Document {
@@ -38,7 +38,7 @@ const userSchema = new Schema<IUser>({
     default: "en",
   },
   plan: {
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     ref: "Plan",
   },
 });
