@@ -1,4 +1,5 @@
 import { Schema, model, Document } from "mongoose";
+import type { IPlan } from "./plan.js";
 
 export interface IUser extends Document {
   email: string;
@@ -8,6 +9,7 @@ export interface IUser extends Document {
   image?: string;
   joinedon: Date;
   preferredLanguage: string;
+  plan?: Schema.Types.ObjectId | IPlan;
 }
 
 const userSchema = new Schema<IUser>({
@@ -31,10 +33,14 @@ const userSchema = new Schema<IUser>({
     type: Date,
     default: Date.now,
   },
-  preferredLanguage:{
-    type:String,
-    default:"en"
-  }
+  preferredLanguage: {
+    type: String,
+    default: "en",
+  },
+  plan: {
+    type: Schema.Types.ObjectId,
+    ref: "Plan",
+  },
 });
 
 const User = model<IUser>("User", userSchema);
