@@ -82,24 +82,24 @@ const commentSchema = new Schema<IComment>(
           type: Date,
           default: Date.now,
         },
-        // moderation fields
-        status: {
-          type: String,
-          enum: ["approved", "flagged", "removed"],
-          default: "approved",
-        },
-
-        flagReason: {
-          type: String,
-          default: null,
-        },
-
-        flaggedAt: {
-          type: Date,
-          default: null,
-        },
       },
     ],
+    // moderation fields
+    status: {
+      type: String,
+      enum: ["approved", "flagged", "removed"],
+      default: "approved",
+    },
+
+    flagReason: {
+      type: String,
+      default: null,
+    },
+
+    flaggedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

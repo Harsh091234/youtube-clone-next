@@ -14,8 +14,15 @@ const index = () => {
   const [video, setvide] = useState<any>(null);
   const [loading, setloading] = useState(true);
   useEffect(() => {
+    if(!router.isReady) return;
+
+      const id = router.query.id;
+
+  if (typeof id !== "string") return;
+
     const fetchvideo = async () => {
-      if (!id || typeof id !== "string") return;
+    
+      setloading(true);
       try {
         const res = await axiosInstance.get("/video/getall");
         const video = res.data?.filter((vid: any) => vid._id === id);
@@ -28,7 +35,7 @@ const index = () => {
       }
     };
     fetchvideo();
-  }, [id]);
+  }, [router.isReady, router.query.id]);
 
   if (loading) {
     return <div>Loading..</div>;

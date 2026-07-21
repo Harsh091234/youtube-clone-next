@@ -43,6 +43,7 @@ const [reportCommentId, setReportCommentId] = useState("");
   const loadComments = async () => {
     try {
       const res = await axiosInstance.get(`/comment/${videoId}`);
+      console.log("res comment ", res.data)
       setComments(res.data);
     } catch (error) {
       console.log(error);
@@ -209,7 +210,9 @@ const openReportDialog = (commentId: string) => {
             <div className="flex gap-2 justify-end">
               <Button
                 variant="ghost"
-                onClick={() => setNewComment("")}
+                onClick={() => {setNewComment("")
+                  setError("");
+                }}
                 disabled={!newComment.trim()}
               >
                 Cancel

@@ -14,11 +14,17 @@ export const postcomment = async (req: Request, res: Response) => {
     newComment.status = "flagged";
     newComment.flagReason = error;
     newComment.flaggedAt = new Date();
+     await newComment.save();
+      return res.status(400).json({
+        message:
+          "Your comment has been flagged for review and will not be visible until it has been reviewed.",
+      }); 
   }
 
   try {
+    newComment.status="approved";
     await newComment.save();
-    return res.status(200).json({ comment: true });
+    return res.status(200).json({ comment: newComment});
   } catch (error) {
     console.error(" error:", error);
     return res.status(500).json({ message: "Something went wrong" });
@@ -180,6 +186,7 @@ export const translateComment = async (req: Request, res: Response) => {
 export const reportComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log("id ", id)
     const { userId, reason, description } = req.body;
 
     const commentToReport = await comment.findById(id);
