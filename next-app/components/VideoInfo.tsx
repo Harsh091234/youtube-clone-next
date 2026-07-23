@@ -113,42 +113,48 @@ const [dialogMessage, setDialogMessage] = useState("");
     }
   };
   
-  const handleDownload = async () => {
-   if (!user) {
+ const handleDownload = async () => {
+  if (!user) {
     setDialogTitle("Login Required");
     setDialogMessage("Please login to download videos.");
     setDialogOpen(true);
     return;
   }
+
   try {
-    const res = await axiosInstance.post("/download", {
-      userId: user._id,
-      videoId: video._id,
-    });
-
-    if (res.data.success) {
-      setDialogTitle("Download Started");
-      setDialogMessage("Your download has started successfully.");
-      setDialogOpen(true);
-
-      const fileUrl = res.data.fileurl;
-
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = ""; // browser uses filename
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  } catch (error: any) {
-    setDialogTitle("Download Failed");
-    setDialogMessage(
-      error.response?.data?.message || "Something went wrong."
+    const response = await axiosInstance.post(
+      "/download",
+      {
+        userId: user._id,
+        videoId: video._id,
+      },
+      {
+        responseType: "blob",
+      }
     );
+
+    const url = window.URL.createObjectURL(response.data);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${video.videotitle}.mp4`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+
+    setDialogTitle("Download Started");
+    setDialogMessage("Your download has started successfully.");
+    setDialogOpen(true);
+  } catch (error: any) {
+    console.log(error);
+
+    setDialogTitle("Download Failed");
+    setDialogMessage("Something went wrong.");
     setDialogOpen(true);
   }
 };
-
 
   return (
     <div className="space-y-4">
